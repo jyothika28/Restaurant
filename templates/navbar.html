@@ -1,0 +1,69 @@
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <div class="float-start">
+            <a class="navbar-brand" href="#">ICON</a>
+            <a class="navbar-brand" href="/sess">Cuisines</a>
+            <a class="navbar-brand" href="#">Orders</a>
+        </div>
+     
+      <div class="float-end">
+        <a class="navbar-brand" href="#"><button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#reservationModal">Make a reservation</button></a>
+        <a class="navbar-brand" href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+    
+        <div class="btn-group">
+            <button class="btn btn-secondary">
+                {{ name | safe }}
+            </button>
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">My Profile</a></li>
+                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+            </ul>
+        </div>
+      </div>
+      
+    </button>
+    <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Make a Reservation</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3 row">
+                    <label for="staticName" class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="staticName" placeholder="Enter Name">
+                    </div>
+                  </div>
+                <div class="mb-3 row">
+                    <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="staticEmail" placeholder="Enter Email">
+                    </div>
+                  </div>
+                <div class="mb-3 row">
+                        <label for="staticPhone" class="col-sm-2 col-form-label">Phone</label>
+                        <div class="col-sm-10">
+                        <input type="tel" class="form-control" id="staticPhone" placeholder="Enter Phone">
+                </div>
+                </div>
+                <div class="mb-3 row">
+                  <label for="staticPeople" class="col-sm-2 col-form-label">People</label>
+                  <div class="col-sm-10">
+                  <input type="number" class="form-control" id="staticPeople" placeholder="Enter Number of people">
+                </div>
+                <!-- Date and time -->
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-success">Reserve</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+  </nav>

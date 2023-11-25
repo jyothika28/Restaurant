@@ -1,0 +1,24 @@
+.wd-center{
+    margin-top: 2%;
+}
+.wd-card-grid{
+    width: 250px;
+    height: 275px;
+    margin: 2%;  
+}
+.card-title{
+    font-size: 1.3rem;
+}
+.card-textP
+{
+    font-size: 0.6rem;
+}
+.wd-cuisine-card{
+    text-decoration: none;
+}
+.wd-dashboard-grid .col{
+    width: 280px;
+    height: 275px;
+    margin: 2%;
+    
+}

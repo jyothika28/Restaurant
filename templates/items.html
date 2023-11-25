@@ -1,0 +1,58 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/font-awesome/css/font-awesome.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.css.map')}}">
+  <script src="{{ url_for('static', filename='vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.min.css.map')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='css/items.css')}}">
+</head>
+<body>
+<div>
+    {{navbarhtml | safe}}
+      <div class="container wd-center">
+        <br/>
+        <h2>{{cuisine_name | safe}} Dishes</h2>
+        <!-- {{items_list | safe}} -->
+        <hr/>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+          {% for i in items_list %}
+            <div class="col">
+              <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-3">
+                    <img src="{{ i['image_url'] }}" class="img-fluid rounded-start" alt="...">
+                  </div>
+                  <div class="col-md-7">
+                    <div class="card-body">
+                      <h5 class="card-title">{{ i['item_name'] }}</h5>
+                      <!-- <p class="card-text">{{ i['item_description'] }}</p> -->
+                      <p class="card-text"><small class="text-body-secondary">${{ i['item_price'] }}</small></p>
+                      <p class="card-text"><small class="text-body-secondary">{{ i['course_name'] }} | {{ i['diet_name'] }}</small></p>
+                    </div>
+                  </div>
+                  <div class="col-md">
+                    <div class="card-body">
+                      <input type="number" placeholder="0" class="form-control d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2" style="--bs-focus-ring-color: rgba(var(--bs-success-rgb), .25)" id="inputQuantity">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+          
+      
+      </div>
+      
+  </div>
+</body>
+</html>
+
+
+  

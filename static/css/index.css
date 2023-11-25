@@ -1,0 +1,137 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900");
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('../images/index_background.jpg');
+    background-size: cover;
+    overflow-x: hidden;
+}
+/* div tag line css  */
+.content {
+	position: relative;
+}
+/*number of people*/
+
+.content h2 {
+	color: #fff;
+	font-size: 1.5em;
+	position: absolute;
+	transform: translate(-50%, -50%);
+    margin-left: 61%;
+    margin-top: -5%;
+}
+
+.content h2:nth-child(1) {
+	color: transparent;
+	-webkit-text-stroke: 2px rgb(167, 219, 120);;
+   /* rgb(167, 219, 120); */
+}
+
+.content h2:nth-child(2) {
+	color: #03a9f4;
+	animation: animate 4s ease-in-out infinite;
+}
+
+@keyframes animate {
+	0%,
+	100% {
+		clip-path: polygon(
+			0% 45%,
+			16% 44%,
+			33% 50%,
+			54% 60%,
+			70% 61%,
+			84% 59%,
+			100% 52%,
+			100% 100%,
+			0% 100%
+		);
+	}
+
+	50% {
+		clip-path: polygon(
+			0% 60%,
+			15% 65%,
+			34% 66%,
+			51% 62%,
+			67% 50%,
+			84% 45%,
+			100% 46%,
+			100% 100%,
+			0% 100%
+		);
+	}
+}
+/* Login and Signup buttons css */
+
+/* .wrapper{
+    position: fixed;
+    top: 60%;
+    left: 59%;
+    transform: translate(-50%, -50%);
+  } */
+  
+  .abuttons{
+    display: block;
+    width: 120px;
+    height: 40px;
+    /* line-height: 40px; */
+    font-size: 18px;
+    font-family: 'helvetica','Montserrat','sans-serif';
+    text-decoration: none;
+    border-radius: 5px;
+    color: #000000;
+    font-weight: bolder;
+    border: 3px solid #807878;
+    letter-spacing: 1px;
+    text-align: center;
+    position: relative;
+    transition: all .35s;
+  }
+  
+  .abuttons span{
+    position: relative;
+    z-index: 2;
+  }
+  
+  .abuttons:after{
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: #ff003b;
+    transition: all .35s;
+  }
+  
+  .abuttons:hover{
+    color: #fff;
+  }
+  
+  .abuttons:hover:after{
+    width: 100%;
+  }
+.wd-navbar{
+    background-color: black;
+}
+.wd-info-container{
+margin-left: 46%;
+margin-top: 3%;
+}
+.wd-tag-line{
+    color: rgb(231, 230, 230);
+    font-size: 2.8rem;
+    font-weight: 600;
+    font-family: 'georgia','Montserrat',sans-serif;
+    padding: 10px;
+}
+.line-one{
+    padding-top: 2%;
+}
+.line-two{
+    padding-top: 2%;
+}
+.third-line{
+    padding-top: 2%;
+}

@@ -1,0 +1,86 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/font-awesome/css/font-awesome.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.css.map')}}">
+  <script src="{{ url_for('static', filename='vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.min.css.map')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='css/user.css')}}">
+</head>
+<body>
+<div>
+    {{navbarhtml | safe}}
+    
+      <div class="container wd-center">
+        <h2>Cuisines</h2>
+        <hr/>
+        <!-- <a href="/items" class="wd-cuisine-card">     -->
+          <!-- <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for cuisine in cuisine_list %}
+            <div class="col">
+              <div class="card">
+                <img src="../static/images/North Indian.jpeg" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">{{cuisine | safe}}</h5>
+                  <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                </div>
+              </div>
+            </div>
+            </div> -->
+            <!-- <div className="list-group">
+              <div className="row row-cols-1 row-cols-md-4 g-4 wd-dashboard-grid">
+                {% for cuisine in cuisine_list %}
+                  <a href="/items" className="list-group-item">
+                    <div class="col">
+                    <div class="card h-100">
+                          <img src="../static/images/North Indian.jpeg" class="card-img-top" alt="..."/>
+                          <div class="card-body">
+                          <h6 className="card-title">{{cuisine | safe }}</h6>
+                          </div>
+                    </div>
+                    </div>
+                  </a>
+                  {% endfor %}
+                </div>
+              </div> -->
+        <!-- <div class="card wd-card-grid" style="width: 15rem; height:8rem;">
+            image_url="../static/images/"+cuisine+".jpg"
+            <img src=image_url class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{cuisine | safe}}</h5>
+              <p class="card-text">A rich tapestry of flavors, blending aromatic spices, creamy gravies, and tandoor-cooked delights for a delightful taste experience.</p>
+           
+            </div>
+        </div> -->
+        <!-- </a>
+        {% endfor %} -->
+        
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+          {% for cuisine in cuisine_list %}
+          <a href="/items/{{ cuisine }}" class="wd-cuisine-card">
+            <div class="col">
+              <div class="card" style="width: 15rem;">
+                {% set image_url = '../static/images/' + cuisine + '.jpg' %}
+                <img src="{{ image_url | safe }}" class="card-img-top" alt="..." />
+                <div class="card-body">
+                  <h5 class="card-title">{{ cuisine | safe }}</h5>
+                  <!-- <p class="card-text">{{ cuisine | safe }}</p> -->
+                </div>
+              </div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      
+  </div>
+</body>
+</html>
+
+
+  
