@@ -39,19 +39,47 @@ try:
                          return redirect(url_for("sess"))
                else:
                     cursor = connection.cursor()
-                    cursor.callproc('GetChefDetails')
-                    for row in cursor.fetchall():
-                         if(row['username']==emailId and row['password']==password):
-                              presentuser=row['chef_name']
-                              session.pop('user',None)
-                              session['user']=presentuser
-                              cursor.close
-                              return redirect(url_for("sess"))      
+                    chef_id_query="select * from chef where email_id='"+emailId+"'"
+                    cursor.execute(chef_id_query)
+                    if(cursor.rowcount!=0):
+                         for row in cursor.fetchall():
+                              chef_id=row['chef_id']
+                         print(chef_id)
+                         if(chef_id[:4]=='CHEF'):
+                              cursor.callproc('GetChefDetails')
+                              for row in cursor.fetchall():
+                                   if(row['email_id']==emailId and row['password']==password):
+                                        presentuser=row['chef_name']
+                                        session.pop('user',None)
+                                        session['user']=presentuser
+                                        cursor.close
+                                        return redirect(url_for("chef_sess"))   
+                              else:
+                                   # Show pop for Invalid credentails
+                                   cursor.close
+                                   ctypes.windll.user32.MessageBoxW(0, "Invalid Credentials", "Error",1)
+                                   return redirect(url_for("index"))
                     else:
-                         # Show pop for Invalid credentails
-                         cursor.close
-                         ctypes.windll.user32.MessageBoxW(0, "Invalid Credentials", "Error",1)
-                         return redirect(url_for("index"))
+                         cursor = connection.cursor()
+                         manager_id_query="select * from manager where email_id='"+emailId+"'"
+                         cursor.execute(manager_id_query)
+                         for row in cursor.fetchall():
+                              manager_id=row['manager_id']
+                         if(manager_id[:3]=='MGR'):
+                              cursor.callproc('GetManagerDetails')
+                              for row in cursor.fetchall():
+                                   if(row['email_id']==emailId and row['password']==password):
+                                        presentuser=row['manager_name']
+                                        session.pop('user',None)
+                                        session['user']=presentuser
+                                        cursor.close
+                                        return redirect(url_for("manager_sess"))   
+                              else:
+                                        # Show pop for Invalid credentails
+                                   cursor.close
+                                   ctypes.windll.user32.MessageBoxW(0, "Invalid Credentials", "Error",1)
+                                   return redirect(url_for("index"))
+                              
           else:
                return render_template("index.html")
                #return render_template("user.html",name=session['user'])
@@ -66,21 +94,167 @@ try:
                u_contactno=signupDetails['new_phone']
                u_id = str(uuid.uuid4())[:8].replace('-', '').upper()
                cursor=connection.cursor()
-               print(u_password)
                cursor.callproc('add_customer',args=(u_id,u_name,u_email,u_password,u_contactno))
                connection.commit()
                cursor.close
                return redirect(url_for('index'))
                
           pass
-
+     
+     @app.route("/makereservation",methods=['GET','POST'])
+     def makereservation():
+          if request.method=='POST':
+               reservationDetails=request.form
+               r_name=reservationDetails['res_name']
+               r_email=reservationDetails['res_email']
+               r_phone=reservationDetails['res_phone']
+               r_people=reservationDetails['res_people']
+               r_date=reservationDetails['res_date']
+               r_time=reservationDetails['res_time']
+               r_table=reservationDetails['res_table']
+               r_id = str(uuid.uuid4())[:8].replace('-', '').upper()
+               print(r_id,r_table,r_name,r_email,r_phone,r_people,r_date,r_time)
+               cursor=connection.cursor()
+               get_customer_id="select * from customer where email_id='"+r_email+"'"
+               cursor.execute(get_customer_id)
+               for row in cursor.fetchall():
+                    c_id=row['customer_id']
+               cursor.callproc('add_reservation',args=(r_id,r_table,r_date,r_time,c_id,r_people))
+               connection.commit()
+               cursor.close
+               return redirect(url_for('sess'))
+               
+          pass
+                    
  
      def render_navbar():
+          if 'user' in session:
+               g.user=session['user']
+               if(g.user):
+                    name=session['user']
+                    cursor=connection.cursor()
+                    get_customer_details="select * from customer where customer_name='"+name+"'"
+                    cursor.execute(get_customer_details)
+                    customer_details=[]
+                    for row in cursor.fetchall():
+                         customer_details.append(row['email_id'])
+                         customer_details.append(row['phone_number'])
+                    cursor.close
+                    return render_template('navbar.html',name=name,customer_details=customer_details)
+          else:
+               return render_template('index.html')
           
-          return render_template('navbar.html',name=session['user'])     
+     def render_chefnavbar():
+          if 'user' in session:
+               g.user=session['user']
+               if(g.user):
+                    name=session['user']
+                    cursor=connection.cursor()
+                    get_customer_details="select * from customer where customer_name='"+name+"'"
+                    cursor.execute(get_customer_details)
+                    customer_details=[]
+                    for row in cursor.fetchall():
+                         customer_details.append(row['email_id'])
+                         customer_details.append(row['phone_number'])
+                    cursor.close
+                    return render_template('chef_navbar.html',name=name,customer_details=customer_details)
+          else:
+               return render_template('index.html')
      
-
+     def render_managernavbar():
+          if 'user' in session:
+               g.user=session['user']
+               if(g.user):
+                    name=session['user']
+                    return render_template('manager_navbar.html',name=name)
+          else:
+               return render_template('index.html')
           
+          
+     
+     @app.route("/chef_orders",methods=['GET','POST'])
+     def chef_orders():
+          if 'user' in session:
+               g.user=session['user']
+               if(g.user):
+                    chefnavbarhtml = render_chefnavbar()
+                    cursor=connection.cursor()
+                    cursor.execute("select * from customer_order")
+                    orders_list=[]
+                    for row in cursor.fetchall():
+                         order_dict = {}
+                         order_dict['order_id'] = row['order_id']
+                         order_dict['order_date'] = row['order_date']
+                         order_dict['order_status'] = row['order_status']
+                         order_dict['chef_id'] = row['chef_id']
+                         orders_list.append(order_dict)
+                    cursor.close
+                    return render_template("chef_orders.html",chefnavbarhtml=chefnavbarhtml,orders_list=orders_list)
+
+     @app.route("/editorder",methods=['GET','POST'])
+     def editorder():
+          if(request.method=='POST'):
+               editOrderDetails=request.form
+               order_id=editOrderDetails['order_id']
+               order_status=editOrderDetails['order_status']
+               cursor=connection.cursor()
+               cursor.callproc('update_order_status',args=(order_id,order_status))
+               connection.commit()
+               cursor.close
+               return redirect(url_for('chef_orders'))
+          pass
+
+     @app.route("/deleteorder",methods=['GET','POST'])
+     def deleteorder():
+          if(request.method=='POST'):
+               deleteOrderDetails=request.form
+               d_order_id=deleteOrderDetails['delete_order_id']
+               cursor=connection.cursor()
+               print(d_order_id)
+               cursor.callproc('delete_order_id',args=(d_order_id,))
+               connection.commit()
+               cursor.close
+               return redirect(url_for('chef_orders'))
+
+     @app.route("/chef_sess",methods=['GET','POST'])
+     def chef_sess():
+          g.user=None
+          if 'user' in session:
+               g.user=session['user']
+               if(g.user):
+                    #adminloop=getadminDetails()
+                    chefnavbarhtml = render_chefnavbar()
+                    cursor=connection.cursor()
+                    #calling the function
+                    cursor.execute("SELECT get_cuisine_count() AS cuisine_count;")
+                    cuisine_count = cursor.fetchone()['cuisine_count']
+                    #calling the procedure
+                    cursor.callproc('GetCuisineDetails')
+                    cuisine_list=[]
+                    for row in cursor.fetchall():
+                         cuisine_list.append(row['cuisine_name'])
+                    cursor.close
+                    return render_template("chef.html",cuisine_list=cuisine_list,cuisine_count=cuisine_count,chefnavbarhtml=chefnavbarhtml)  
+
+     @app.route("/manager_sess",methods=['GET','POST'])
+     def manager_sess():
+          g.user=None
+          if 'user' in session:
+               g.user=session['user']
+               if(g.user):
+                    #adminloop=getadminDetails()
+                    managernavbarhtml = render_managernavbar()
+                    cursor=connection.cursor()
+                    #calling the function
+                    cursor.execute("SELECT get_cuisine_count() AS cuisine_count;")
+                    cuisine_count = cursor.fetchone()['cuisine_count']
+                    #calling the procedure
+                    cursor.callproc('GetCuisineDetails')
+                    cuisine_list=[]
+                    for row in cursor.fetchall():
+                         cuisine_list.append(row['cuisine_name'])
+                    cursor.close
+                    return render_template("manager.html",cuisine_list=cuisine_list,cuisine_count=cuisine_count,managernavbarhtml=managernavbarhtml)  
 
      @app.route("/sess",methods=['GET','POST'])
      def sess():
@@ -91,11 +265,16 @@ try:
                     #adminloop=getadminDetails()
                     navbarhtml = render_navbar()
                     cursor=connection.cursor()
+                    #calling the function
+                    cursor.execute("SELECT get_cuisine_count() AS cuisine_count;")
+                    cuisine_count = cursor.fetchone()['cuisine_count']
+                    #calling the procedure
                     cursor.callproc('GetCuisineDetails')
                     cuisine_list=[]
                     for row in cursor.fetchall():
                          cuisine_list.append(row['cuisine_name'])
-                    return render_template("user.html",navbarhtml=navbarhtml,cuisine_list=cuisine_list)
+                    cursor.close
+                    return render_template("user.html",navbarhtml=navbarhtml,cuisine_list=cuisine_list,cuisine_count=cuisine_count)
                else:
                     return render_template("index.html")
           else:
@@ -111,10 +290,12 @@ try:
                     navbarhtml = render_navbar()
                     cursor=connection.cursor()
                     get_cuisine_id="select cuisine_id from cuisine where cuisine_name='"+cuisine_name+"'"
-                    print(get_cuisine_id)
                     cursor.execute(get_cuisine_id)
                     for row in cursor.fetchall():
                          retreive_cuisine_id=row['cuisine_id']
+                    #calling the function
+                    cursor.execute("SELECT get_item_count_by_cuisine(%s) AS item_count;", (retreive_cuisine_id,))
+                    cuisine_item_count=cursor.fetchone()['item_count']
                     cursor.callproc('get_food_item_cuisine',args=(retreive_cuisine_id,))
                     items_list=[]
                     for row in cursor.fetchall():
@@ -127,11 +308,9 @@ try:
                          item_dict['diet_name'] = row['diet_name']
                          item_dict['image_url'] = row['image_url']
                          items_list.append(item_dict)
-                    
-                    
-               
+                    cursor.close
 
-                    return render_template("items.html",navbarhtml=navbarhtml,cuisine_name=cuisine_name,items_list=items_list)
+                    return render_template("items.html",navbarhtml=navbarhtml,cuisine_name=cuisine_name,items_list=items_list,cuisine_item_count=cuisine_item_count)
 
           # return f"Viewing details for cuisine: {cuisine_name}"     
      @app.route("/logout",methods=['GET','POST'])

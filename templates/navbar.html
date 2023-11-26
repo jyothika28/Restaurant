@@ -1,15 +1,18 @@
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
         <div class="float-start">
-            <a class="navbar-brand" href="#">ICON</a>
+            <!-- <a class="navbar-brand" href="#">ICON</a> -->
             <a class="navbar-brand" href="/sess">Cuisines</a>
             <a class="navbar-brand" href="#">Orders</a>
         </div>
      
       <div class="float-end">
-        <a class="navbar-brand" href="#"><button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#reservationModal">Make a reservation</button></a>
-        <a class="navbar-brand" href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+
+      <a class="navbar-brand" href="#"><button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#reservationModal">Make a reservation</button></a>
+      <a class="navbar-brand" href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
     
+
+
         <div class="btn-group">
             <button class="btn btn-secondary">
                 {{ name | safe }}
@@ -18,13 +21,13 @@
                 <span class="visually-hidden">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">My Profile</a></li>
+                <!-- <li><a class="dropdown-item" href="#">My Profile</a></li> -->
                 <li><a class="dropdown-item" href="/logout">Logout</a></li>
             </ul>
         </div>
       </div>
-      
-    </button>
+    </div>
+    <form method="POST" action="{{ url_for('makereservation') }}">
     <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -36,34 +39,67 @@
                 <div class="mb-3 row">
                     <label for="staticName" class="col-sm-2 col-form-label">Name</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="staticName" placeholder="Enter Name">
+                      <input type="text" name="res_name" value="{{ name | safe }}" class="form-control" id="staticName" placeholder="Enter Name" required>
                     </div>
                   </div>
                 <div class="mb-3 row">
                     <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="staticEmail" placeholder="Enter Email">
+                      <input type="text" name="res_email" value="{{customer_details[0] | safe }}" class="form-control" id="staticEmail" placeholder="Enter Email" required>
                     </div>
                   </div>
                 <div class="mb-3 row">
                         <label for="staticPhone" class="col-sm-2 col-form-label">Phone</label>
                         <div class="col-sm-10">
-                        <input type="tel" class="form-control" id="staticPhone" placeholder="Enter Phone">
+                        <input type="tel" name="res_phone" value="{{customer_details[1] | safe }}"class="form-control" id="staticPhone" placeholder="Enter Phone" required>
                 </div>
                 </div>
                 <div class="mb-3 row">
                   <label for="staticPeople" class="col-sm-2 col-form-label">People</label>
                   <div class="col-sm-10">
-                  <input type="number" class="form-control" id="staticPeople" placeholder="Enter Number of people">
+                  <input type="number" name="res_people" class="form-control" id="staticPeople" placeholder="Enter Number of people" required>
                 </div>
                 <!-- Date and time -->
+                
             </div>
+            <div class="mb-3 row">
+                <label for="staticDate" class="col-sm-2 col-form-label">Date</label>
+                <div class="col-sm-10">
+                <input type="date" name="res_date" class="form-control" id="staticDate" placeholder="Enter Date" required>
+              </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="staticTime" class="col-sm-2 col-form-label">Time</label>
+                <div class="col-sm-10">
+                <input type="time" name="res_time" class="form-control" id="staticTime" placeholder="Enter Time" required>
+              </div>
+              </div>
+              <div class="mb-3 row">
+                <label for="staticTable" class="col-sm-2 col-form-label">Table</label>
+                <div class="col-sm-10">
+                <select class="form-select" aria-placeholder="Enter Table No" name="res_table" aria-label="Default select example" required>
+                    <option selected>Select Table</option>
+                    <option value="1">Table 1</option>
+                    <option value="2">Table 2</option>
+                    <option value="3">Table 3</option>
+                    <option value="4">Table 4</option>
+                    <option value="5">Table 5</option>
+                    <option value="6">Table 6</option>
+                    <option value="7">Table 7</option>
+                    <option value="8">Table 8</option>
+                    <option value="9">Table 9</option>
+                    <option value="10">Table 10</option>
+                </select>
+                </div>
+              </div>
+
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-success">Reserve</button>
+              <button type="submit" class="btn btn-success">Reserve</button>
+
             </div>
           </div>
         </div>
       </div>
       </div>
+      </form>
   </nav>
