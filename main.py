@@ -4,6 +4,8 @@ import ctypes
 import pandas as pd
 import os
 import uuid
+import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt2
 app=Flask(__name__)
 
 import pymysql
@@ -65,7 +67,7 @@ try:
                          for row in cursor.fetchall():
                               manager_id=row['manager_id']
                          if(manager_id[:3]=='MGR'):
-                              cursor.execute('select * from manager_view;')
+                              cursor.callproc('GetManagerDetails')
                               for row in cursor.fetchall():
                                    if(row['email_id']==emailId and row['password']==password):
                                         presentuser=row['manager_name']
@@ -311,6 +313,69 @@ try:
           else:
           
                return redirect(url_for('index'))
+     
+     @app.route('/statistics', methods=['GET', 'POST'])
+     def statistics():
+          if 'user' in session:
+               g.user=session['user']
+               if(g.user):
+                    managernavbarhtml = render_managernavbar()
+                    cuisine_list=[]
+
+                    cursor=connection.cursor()
+                    cursor.execute("SELECT * FROM orders_count_by_date")
+                    result = cursor.fetchall()
+
+                    dates = [row['order_date'] for row in result]
+                    order_counts = [row['order_count'] for row in result]
+
+                    date_strings = [str(date) for date in dates]
+                    print(date_strings)
+                    print(order_counts)
+
+                    plt.figure(figsize=(10, 10))
+                    plt.plot(dates, order_counts, marker='o')
+                    plt.title('Number of Orders Over Time')
+                    plt.xlabel('Date')
+                    plt.ylabel('Number of Orders')
+                    plt.xticks(rotation=45)
+                    plt.savefig('static/graph.png')
+
+                    cursor.callproc('GetCuisineDetails')
+                    for row in cursor.fetchall():
+                         cuisine_list.append(row['cuisine_name'])
+                    cursor.close
+                    print(cuisine_list)
+
+                    if request.method == 'POST':
+                         
+                         selected_cuisine = request.form.get('cuisine')
+                         cursor.execute("SELECT * FROM item_sales_view")
+                         sales = filter(lambda row: row['cuisine_name'] == selected_cuisine, cursor.fetchall())
+                         
+                         items = []
+                         quantities = []
+                         for row in sales:
+                              items.append(str(row['item_name']))
+                              quantities.append(row['total_quantity_sold'])
+                         
+                         print(items)
+                         print(quantities)
+
+                         if items == []:
+                              no_sales_message = "No sales recorded for " + selected_cuisine + " cuisine"
+                              return render_template('statistics.html', managernavbarhtml=managernavbarhtml, cuisines=cuisine_list, no_sales_message=no_sales_message)
+
+                         plt2.figure(figsize=(32, 10))
+                         plt2.barh(items, quantities, color='green')
+                         plt2.ylabel('Food Item', fontsize=20)
+                         plt2.xlabel('Total Quantity Sold', fontsize=20)
+                         plt2.title(f'Sales of Food Items in {selected_cuisine}', fontsize=20)
+                         plt2.yticks(rotation=60, ha='right', fontsize=15)
+                         plt2.savefig('static/sales_graph.png')
+
+                    
+                    return render_template('statistics.html', managernavbarhtml=managernavbarhtml, cuisines=cuisine_list, no_sales_message=None)
           
      @app.route('/items/<cuisine_name>')
      def view_item(cuisine_name):
