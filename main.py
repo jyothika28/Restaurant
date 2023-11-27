@@ -10,10 +10,10 @@ import pymysql
 from pymysql import Error
 from flask import render_template
 try:
-     # username=input("Enter username ")
-     # password=input("Enter password ")
+     username=input("Enter username ")
+     password=input("Enter password ")
 
-     connection = pymysql.connect(host='localhost', user='root', password='password',db='restaurant_1', charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+     connection = pymysql.connect(host='localhost', user=username, password=password,db='restaurant', charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
      print("Connected to the database")
      @app.route("/index")
      @app.route("/",methods=['GET','POST'])
@@ -65,7 +65,7 @@ try:
                          for row in cursor.fetchall():
                               manager_id=row['manager_id']
                          if(manager_id[:3]=='MGR'):
-                              cursor.callproc('GetManagerDetails')
+                              cursor.execute('select * from manager_view;')
                               for row in cursor.fetchall():
                                    if(row['email_id']==emailId and row['password']==password):
                                         presentuser=row['manager_name']
@@ -210,7 +210,7 @@ try:
                if(g.user):
                     chefnavbarhtml = render_chefnavbar()
                     cursor=connection.cursor()
-                    cursor.execute("select * from customer_order")
+                    cursor.execute("SELECT * FROM chef_orders_view;")
                     orders_list=[]
                     for row in cursor.fetchall():
                          order_dict = {}
@@ -349,9 +349,11 @@ try:
           session.pop('user',None)
           return render_template("index.html")
     
-
-     if __name__=="__main__":
-          app.secret_key='1234'
-          app.run(debug=True)
 except pymysql.Error as e:
-     print("Failed to connect to the database, Invalid credentials:{}".format(e))       
+     print("Failed to connect to the database, Invalid credentials:{}".format(e))  
+     exit()
+
+if __name__=="__main__":
+     app.secret_key='1234'
+     app.run(debug=True)
+     

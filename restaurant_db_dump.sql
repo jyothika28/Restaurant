@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `restaurant` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `restaurant`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: restaurant
@@ -43,6 +41,21 @@ LOCK TABLES `chef` WRITE;
 INSERT INTO `chef` VALUES ('CHEF001','Alice Johnson','alice_j@gmail.com','pass123'),('CHEF002','Bob Smith','bob_smith@gmail.com','secure456'),('CHEF003','Charlie Davis','charlie_d@gmail.com','pass789'),('CHEF004','David Anderson','david_a@gmail.com','secret123'),('CHEF005','Eva White','eva_w@gmail.com','password123'),('CHEF006','Frank Brown','frank_b@gmail.com','newpass789'),('CHEF007','Grace Green','grace_g@gmail.com','pass456'),('CHEF008','Henry Taylor','henry_t@gmail.com','secure789'),('CHEF009','Isabella Miller','isabella_m@gmail.com','pass789'),('CHEF010','James Brown','james_b@gmail.com','newpass456');
 /*!40000 ALTER TABLE `chef` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `chef_orders_view`
+--
+
+DROP TABLE IF EXISTS `chef_orders_view`;
+/*!50001 DROP VIEW IF EXISTS `chef_orders_view`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `chef_orders_view` AS SELECT 
+ 1 AS `order_id`,
+ 1 AS `order_date`,
+ 1 AS `order_status`,
+ 1 AS `chef_id`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `course`
@@ -105,6 +118,7 @@ CREATE TABLE `customer` (
   `phone_number` decimal(10,0) NOT NULL,
   `email_id` varchar(50) DEFAULT NULL,
   `password` varchar(20) NOT NULL,
+  `customer_created` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
   UNIQUE KEY `email_id` (`email_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -116,9 +130,24 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES ('0ACCF42A','Al',2345678980,'al@gmail.com','password'),('1','John',8478292878,'john@gmail.com','john@123'),('10','Sally',9837283746,'sally@gmail.com','sally@123'),('2','Sarah',9873564789,'sarah@gmail.com','sarah@123'),('3','Sahithi',9182638299,'sahithi@gmail.com','sahithi@123'),('4','Martha',6271836783,'martha@gmail.com','martha@123'),('5','Jyothika',8272919048,'jyothika@gmail.com','jyothika@123'),('6','George',7483728987,'george@gmail.com','george@123'),('7','Leia',2637890489,'leia@gmail.com','leia@123'),('8','Sam',8574892857,'sam@gmail.com','sam@123'),('9','Adam',6758392898,'adam@gmail.com','adam@123'),('F1F658C4','Carol',5462729002,'carol@gmail.com','password');
+INSERT INTO `customer` VALUES ('0ACCF42A','Al',2345678980,'al@gmail.com','password',NULL),('1','John',8478292878,'john@gmail.com','john@123',NULL),('10','Sally',9837283746,'sally@gmail.com','sally@123',NULL),('2','Sarah',9873564789,'sarah@gmail.com','sarah@123',NULL),('3','Sahithi',9182638299,'sahithi@gmail.com','sahithi@123',NULL),('4','Martha',6271836783,'martha@gmail.com','martha@123',NULL),('5','Jyothika',8272919048,'jyothika@gmail.com','jyothika@123',NULL),('6','George',7483728987,'george@gmail.com','george@123',NULL),('7','Leia',2637890489,'leia@gmail.com','leia@123',NULL),('8','Sam',8574892857,'sam@gmail.com','sam@123',NULL),('9','Adam',6758392898,'adam@gmail.com','adam@123',NULL),('E7EB001A','Jane',9998765432,'janesloan@gmail.com','scarlet','2023-11-27 03:33:33'),('F1F658C4','Carol',5462729002,'carol@gmail.com','password',NULL);
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_customer_insert` BEFORE INSERT ON `customer` FOR EACH ROW SET NEW.customer_created = NOW(); */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `customer_order`
@@ -289,6 +318,21 @@ INSERT INTO `manager` VALUES ('MGR001','John Doe','john_doe@gmail.com','pass123'
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `manager_view`
+--
+
+DROP TABLE IF EXISTS `manager_view`;
+/*!50001 DROP VIEW IF EXISTS `manager_view`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `manager_view` AS SELECT 
+ 1 AS `manager_id`,
+ 1 AS `manager_name`,
+ 1 AS `email_id`,
+ 1 AS `password`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `order_item`
 --
 
@@ -399,9 +443,13 @@ CREATE TABLE `waiting_list` (
 
 LOCK TABLES `waiting_list` WRITE;
 /*!40000 ALTER TABLE `waiting_list` DISABLE KEYS */;
-INSERT INTO `waiting_list` VALUES ('69402ED9','2023-11-23','10:00:00','F1F658C4',4,9),('BA1D5731','2023-11-14','10:10:00','0ACCF42A',3,9),('WL001','2023-11-23','18:30:00','10',NULL,NULL),('WL002','2023-11-24','19:00:00','9',NULL,NULL),('WL003','2023-11-25','20:30:00','8',NULL,NULL),('WL004','2023-11-26','21:00:00','7',NULL,NULL),('WL005','2023-11-27','18:45:00','6',NULL,NULL),('WL006','2023-11-28','19:15:00','5',NULL,NULL),('WL007','2023-11-29','20:45:00','4',NULL,NULL),('WL008','2023-11-30','21:15:00','3',NULL,NULL),('WL009','2023-12-01','18:15:00','2',NULL,NULL),('WL010','2023-12-02','19:45:00','1',NULL,NULL);
+INSERT INTO `waiting_list` VALUES ('23D9F0B7','2023-11-30','02:30:00','4',2,7),('69402ED9','2023-11-23','10:00:00','F1F658C4',4,9),('BA1D5731','2023-11-14','10:10:00','0ACCF42A',3,9),('WL001','2023-11-23','18:30:00','10',NULL,NULL),('WL002','2023-11-24','19:00:00','9',NULL,NULL),('WL003','2023-11-25','20:30:00','8',NULL,NULL),('WL004','2023-11-26','21:00:00','7',NULL,NULL),('WL005','2023-11-27','18:45:00','6',NULL,NULL),('WL006','2023-11-28','19:15:00','5',NULL,NULL),('WL007','2023-11-29','20:45:00','4',NULL,NULL),('WL008','2023-11-30','21:15:00','3',NULL,NULL),('WL009','2023-12-01','18:15:00','2',NULL,NULL),('WL010','2023-12-02','19:45:00','1',NULL,NULL);
 /*!40000 ALTER TABLE `waiting_list` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping events for database 'restaurant'
+--
 
 --
 -- Dumping routines for database 'restaurant'
@@ -716,6 +764,42 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Final view structure for view `chef_orders_view`
+--
+
+/*!50001 DROP VIEW IF EXISTS `chef_orders_view`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `chef_orders_view` AS select `customer_order`.`order_id` AS `order_id`,`customer_order`.`order_date` AS `order_date`,`customer_order`.`order_status` AS `order_status`,`customer_order`.`chef_id` AS `chef_id` from `customer_order` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `manager_view`
+--
+
+/*!50001 DROP VIEW IF EXISTS `manager_view`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `manager_view` AS select `manager`.`manager_id` AS `manager_id`,`manager`.`manager_name` AS `manager_name`,`manager`.`email_id` AS `email_id`,`manager`.`password` AS `password` from `manager` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -726,4 +810,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-26 20:37:20
+-- Dump completed on 2023-11-26 23:04:38
