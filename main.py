@@ -129,6 +129,7 @@ try:
 
      @app.route("/addwaitinglist",methods=['GET','POST'])
      def addwaitinglist():
+          m_id = request.args.get('manager_id')
           if request.method=='POST':
                waitingListDetails=request.form
                w_name=waitingListDetails['w_name']
@@ -140,7 +141,7 @@ try:
                w_table=waitingListDetails['w_table']
                w_id = str(uuid.uuid4())[:8].replace('-', '').upper()
                c_id = str(uuid.uuid4())[:8].replace('-', '').upper()
-               print(w_id,w_table,w_name,w_email,w_phone,w_people,w_date,w_time,c_id)
+               print(w_id,w_table,w_name,w_email,w_phone,w_people,w_date,w_time,c_id, m_id)
                cursor=connection.cursor()
                get_customer_id="select * from customer where email_id='"+w_email+"'"
                cursor.execute(get_customer_id)
@@ -152,7 +153,7 @@ try:
                     for row in cursor.fetchall():
                          c_id=row['customer_id']
                # print('2: ', w_id,w_table,w_date,w_time,c_id,w_people)
-               cursor.callproc('add_waiting_list',args=(w_id,w_table,w_date,w_time,c_id,w_people))
+               cursor.callproc('add_waiting_list',args=(w_id,w_table,w_date,w_time,c_id,w_people, m_id))
                connection.commit()
                cursor.close
                return redirect(url_for('manager_sess'))
@@ -199,7 +200,15 @@ try:
                g.user=session['user']
                if(g.user):
                     name=session['user']
-                    return render_template('manager_navbar.html',name=name)
+                    cursor=connection.cursor()
+                    get_manager_details="select * from manager where manager_name='"+name+"'"
+                    cursor.execute(get_manager_details)
+                    manager_details=[]
+                    for row in cursor.fetchall():
+                         manager_details.append(row['email_id'])
+                         manager_details.append(row['manager_id'])
+                    cursor.close
+                    return render_template('manager_navbar.html',name=name, manager_details=manager_details)
           else:
                return render_template('index.html')
           
