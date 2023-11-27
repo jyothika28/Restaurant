@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `restaurant` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `restaurant`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: restaurant
@@ -114,7 +116,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES ('1','John',8478292878,'john@gmail.com','john@123'),('10','Sally',9837283746,'sally@gmail.com','sally@123'),('2','Sarah',9873564789,'sarah@gmail.com','sarah@123'),('3','Sahithi',9182638299,'sahithi@gmail.com','sahithi@123'),('4','Martha',6271836783,'martha@gmail.com','martha@123'),('5','Jyothika',8272919048,'jyothika@gmail.com','jyothika@123'),('6','George',7483728987,'george@gmail.com','george@123'),('7','Leia',2637890489,'leia@gmail.com','leia@123'),('8','Sam',8574892857,'sam@gmail.com','sam@123'),('9','Adam',6758392898,'adam@gmail.com','adam@123');
+INSERT INTO `customer` VALUES ('0ACCF42A','Al',2345678980,'al@gmail.com','password'),('1','John',8478292878,'john@gmail.com','john@123'),('10','Sally',9837283746,'sally@gmail.com','sally@123'),('2','Sarah',9873564789,'sarah@gmail.com','sarah@123'),('3','Sahithi',9182638299,'sahithi@gmail.com','sahithi@123'),('4','Martha',6271836783,'martha@gmail.com','martha@123'),('5','Jyothika',8272919048,'jyothika@gmail.com','jyothika@123'),('6','George',7483728987,'george@gmail.com','george@123'),('7','Leia',2637890489,'leia@gmail.com','leia@123'),('8','Sam',8574892857,'sam@gmail.com','sam@123'),('9','Adam',6758392898,'adam@gmail.com','adam@123'),('F1F658C4','Carol',5462729002,'carol@gmail.com','password');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -384,6 +386,7 @@ CREATE TABLE `waiting_list` (
   `waiting_list_time` time NOT NULL,
   `customer_id` varchar(10) DEFAULT NULL,
   `number_of_people` int DEFAULT NULL,
+  `table_number` decimal(2,0) DEFAULT NULL,
   PRIMARY KEY (`waiting_list_id`),
   KEY `customer_id` (`customer_id`),
   CONSTRAINT `waiting_list_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -396,13 +399,9 @@ CREATE TABLE `waiting_list` (
 
 LOCK TABLES `waiting_list` WRITE;
 /*!40000 ALTER TABLE `waiting_list` DISABLE KEYS */;
-INSERT INTO `waiting_list` VALUES ('WL001','2023-11-23','18:30:00','10',NULL),('WL002','2023-11-24','19:00:00','9',NULL),('WL003','2023-11-25','20:30:00','8',NULL),('WL004','2023-11-26','21:00:00','7',NULL),('WL005','2023-11-27','18:45:00','6',NULL),('WL006','2023-11-28','19:15:00','5',NULL),('WL007','2023-11-29','20:45:00','4',NULL),('WL008','2023-11-30','21:15:00','3',NULL),('WL009','2023-12-01','18:15:00','2',NULL),('WL010','2023-12-02','19:45:00','1',NULL);
+INSERT INTO `waiting_list` VALUES ('69402ED9','2023-11-23','10:00:00','F1F658C4',4,9),('BA1D5731','2023-11-14','10:10:00','0ACCF42A',3,9),('WL001','2023-11-23','18:30:00','10',NULL,NULL),('WL002','2023-11-24','19:00:00','9',NULL,NULL),('WL003','2023-11-25','20:30:00','8',NULL,NULL),('WL004','2023-11-26','21:00:00','7',NULL,NULL),('WL005','2023-11-27','18:45:00','6',NULL,NULL),('WL006','2023-11-28','19:15:00','5',NULL,NULL),('WL007','2023-11-29','20:45:00','4',NULL,NULL),('WL008','2023-11-30','21:15:00','3',NULL,NULL),('WL009','2023-12-01','18:15:00','2',NULL,NULL),('WL010','2023-12-02','19:45:00','1',NULL,NULL);
 /*!40000 ALTER TABLE `waiting_list` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping events for database 'restaurant'
---
 
 --
 -- Dumping routines for database 'restaurant'
@@ -532,11 +531,39 @@ IN r_id VARCHAR(10),
     IN r_date DATE,
     IN r_time TIME,
     IN c_id VARCHAR(10),
-    num_people INT
+    IN num_people INT
 )
 BEGIN
     INSERT INTO reservation (reservation_id, table_number, reservation_date, reservation_time, customer_id, number_of_people)
     VALUES (r_id, table_num, r_date, r_time, c_id, num_people);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `add_waiting_list` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_waiting_list`(
+	IN w_id VARCHAR(10),
+    IN table_num INT,
+    IN w_date DATE,
+    IN w_time TIME,
+    IN c_id VARCHAR(10),
+    IN num_people INT
+    
+)
+BEGIN
+    INSERT INTO waiting_list (waiting_list_id, waiting_list_date, waiting_list_time, customer_id, number_of_people, table_number)
+    VALUES (w_id, w_date, w_time, c_id, num_people, table_num);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -699,4 +726,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-26  2:57:54
+-- Dump completed on 2023-11-26 20:37:20

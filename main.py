@@ -13,8 +13,7 @@ try:
      # username=input("Enter username ")
      # password=input("Enter password ")
 
-     connection = pymysql.connect(host='localhost', user='Jyothika', password='Hyeg8a@03282',db='restaurant', charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
-     
+     connection = pymysql.connect(host='localhost', user='root', password='password',db='restaurant_1', charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
      print("Connected to the database")
      @app.route("/index")
      @app.route("/",methods=['GET','POST'])
@@ -123,6 +122,38 @@ try:
                connection.commit()
                cursor.close
                return redirect(url_for('sess'))
+               
+          pass
+
+     @app.route("/addwaitinglist",methods=['GET','POST'])
+     def addwaitinglist():
+          if request.method=='POST':
+               waitingListDetails=request.form
+               w_name=waitingListDetails['w_name']
+               w_email=waitingListDetails['w_email']
+               w_phone=waitingListDetails['w_phone']
+               w_people=waitingListDetails['w_people']
+               w_date=waitingListDetails['w_date']
+               w_time=waitingListDetails['w_time']
+               w_table=waitingListDetails['w_table']
+               w_id = str(uuid.uuid4())[:8].replace('-', '').upper()
+               c_id = str(uuid.uuid4())[:8].replace('-', '').upper()
+               print(w_id,w_table,w_name,w_email,w_phone,w_people,w_date,w_time,c_id)
+               cursor=connection.cursor()
+               get_customer_id="select * from customer where email_id='"+w_email+"'"
+               cursor.execute(get_customer_id)
+               if(cursor.rowcount==0):
+                    # print('1: ', c_id,w_name,w_email,'password',w_phone)
+                    cursor.callproc('add_customer',args=(c_id,w_name,w_email,'password',w_phone))
+                    connection.commit()
+               else:
+                    for row in cursor.fetchall():
+                         c_id=row['customer_id']
+               # print('2: ', w_id,w_table,w_date,w_time,c_id,w_people)
+               cursor.callproc('add_waiting_list',args=(w_id,w_table,w_date,w_time,c_id,w_people))
+               connection.commit()
+               cursor.close
+               return redirect(url_for('manager_sess'))
                
           pass
                     
