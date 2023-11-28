@@ -1,0 +1,64 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/font-awesome/css/font-awesome.css')}}">
+    <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.css')}}">
+    <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.css.map')}}">
+    <script src="{{ url_for('static', filename='vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script
+    src="https://code.jquery.com/jquery-3.7.1.js"
+    integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.min.css.map')}}">
+    <link rel="stylesheet" href="{{ url_for ('static',filename='css/cart.css')}}">
+</head>
+<body>
+    {{navbarhtml | safe}}
+    <div class="container wd-center">
+        <br/>
+        <h2>Cart</h2>
+        <hr/>
+        
+        <ul>
+            {% for item_id, details in cart_items.items() %}
+                <li style="list-style-type: none;">
+                    <div class="row mb-3">
+                        <div class="col-md-2">
+                            <img src="{{ details['image_url'] }}" class="img-fluid rounded" alt="...">
+                        </div>
+                        <div class="col">
+                            <div>
+                                <h5>{{ details['name'] }}</h5>
+                                Price: ${{ details['price'] }}
+                            </div>
+                            <div>
+                                Quantity: {{ details['quantity'] }}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="row">
+            <h5 class="mt-3 mb-3 col-md-2" style="margin-left: 30px;">Total Cost: <span style="color: green;">${{ total_cost }}</span></h5>
+            <button type="button" class="btn btn-success col-md-1 mt-2 mb-2" onclick="saveCart()">Save Cart</button>
+        </div>
+    </div>
+<script>
+    function saveCart() {
+        $.ajax({
+            url: `{{ url_for('save_cart') }}`, 
+            type: 'POST',
+            success: function(response) {
+                alert('Cart saved successfully!');
+                window.location.href = `{{ url_for('sess') }}`;
+            },
+            error: function(error) {
+                alert('Error saving cart');
+            }
+        });
+    }
+    </script>
+    
+</body>
+</html>

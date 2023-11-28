@@ -1,9 +1,11 @@
 import re
-from flask import Flask, request, flash,redirect,render_template, url_for,session,g
+from flask import Flask, request, flash,redirect,render_template, url_for,session,g, jsonify
 import ctypes
 import pandas as pd
 import os
 import uuid
+import sys
+import datetime
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt2
 app=Flask(__name__)
@@ -16,6 +18,7 @@ try:
      # password=input("Enter password ")
 
      connection = pymysql.connect(host='localhost', user='Jyothika', password='Hyeg8a@03282',db='restaurant1', charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+
      print("Connected to the database")
      @app.route("/index")
      @app.route("/",methods=['GET','POST'])
@@ -432,6 +435,73 @@ try:
      def logout():
           session.pop('user',None)
           return render_template("index.html")
+
+     cart_items = {}
+
+     @app.route('/add_to_cart/<item_id>', methods=['GET', 'POST'])
+     def add_to_cart(item_id):
+          if 'user' in session:
+               g.user=session['user']
+               if(g.user):
+                    quantity = int(request.form.get('quantity', 1))
+
+                    cursor=connection.cursor()
+                    cursor.callproc('get_food_item_details',args=(item_id,))
+                    item_details = cursor.fetchall()[0]
+                    # Add the item to the cart dictionary
+                    cart_items[item_id] = {
+                         'quantity': quantity,
+                         'name': item_details['item_name'],
+                         'price': item_details['item_price'],
+                         'image_url': item_details['image_url']
+                    }
+                    return jsonify({'status': 'success', 'message': 'Item added to cart'})
+
+     @app.route('/view_cart')
+     def view_cart():
+          if 'user' in session:
+               g.user=session['user']
+               if(g.user):
+                    navbarhtml = render_navbar()
+                    prices = ""
+                    for item_id, item in cart_items.items():
+                         prices += str(item['quantity'] * item['price']) + ", "
+                    prices = prices[:-2]
+                    cursor=connection.cursor()
+                    get_total_cost="select calculate_total_cost('"+prices+"')"
+                    print(get_total_cost)
+                    cursor.execute(get_total_cost)
+                    total_cost=cursor.fetchall()[0]['calculate_total_cost(\''+prices+'\')']
+                    print(total_cost)
+                    
+                    return render_template('cart.html', navbarhtml=navbarhtml, cart_items=cart_items, total_cost=total_cost)
+     
+     @app.route('/save_cart', methods=['POST'])
+     def save_cart():
+           if 'user' in session:
+               g.user=session['user']
+               if(g.user):
+                    try:
+                         order_id = str(uuid.uuid4())[:8].replace('-', '').upper()
+                         order_date = datetime.date.today()
+                         order_status = 'Pending'
+                         cursor=connection.cursor()
+                         print('Order id: ', order_id, 'Order date: ', order_date, 'Order status: ', order_status)
+                         cursor.callproc('add_order',args=(order_id, order_date, order_status))
+
+                         for item in cart_items:
+                              print('Order id: ', order_id, 'Item id: ', item, 'Quantity: ', cart_items[item]['quantity'])
+                              cursor.callproc('add_order_item',args=(order_id, item, cart_items[item]['quantity'],))
+                              connection.commit()
+                         cursor.close
+
+                         cart_items.clear()
+
+                         return jsonify({'status': 'success'})
+
+                    except Exception as e:
+                         print(f"Error saving cart: {e}")
+                         return jsonify({'status': 'error'})
     
 except pymysql.Error as e:
      print("Failed to connect to the database, Invalid credentials:{}".format(e))  
