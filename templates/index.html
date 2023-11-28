@@ -22,9 +22,37 @@
           <div class="float-end">
             <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#aboutModal">About Us</button>
             <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#contactModal">Contact Us</button>
+            <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#feedbackModal">Show Feedback</button> 
+             
           </div>
           </div>
-          
+          <div class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+   
+
+          <!-- Feedback modal-->
+          <div class="modal-dialog modal-dialog-scrollable">
+            ...
+          </div>
+       
           <!-- Login modal -->
           <form method="POST" action="{{ url_for('login') }}">
           <div class="modal fade" id="exampleLoginToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
@@ -37,13 +65,12 @@
                 <div class="modal-body">
                         <div class="mb-3">
                           <label for="exampleInputEmail1" class="form-label">Email</label>
-                          <input type="email" name="u_email" class="form-control" id="exampleInputEmail1" placeholder="Enter Email Address" aria-describedby="emailHelp">     
+                          <input type="email" name="u_email" class="form-control" id="exampleInputEmail1" placeholder="Enter Email Address" aria-describedby="emailHelp" required>     
                         </div>
                         <div class="mb-3">
                           <label for="exampleInputPassword1" class="form-label">Password</label>
-                          <input type="password" name="u_pass" class="form-control" placeholder="Enter Password" id="exampleInputPassword1">
-                        </div>
-                  
+                          <input type="password" name="u_pass" class="form-control" placeholder="Enter Password" id="exampleInputPassword1" required>
+                        </div>  
                 </div>
                 <div class="modal-footer">
                   <button type="submit" class="btn btn-primary">Log In</button>  
@@ -66,19 +93,19 @@
                     <form>
                       <div class="mb-3">
                         <label for="user-name" class="form-label">Name</label>
-                        <input type="text" name="new_name" class="form-control" id="user-name" placeholder="Enter Name">
+                        <input type="text" name="new_name" class="form-control" id="user-name" placeholder="Enter Name" required>
                       </div>
                         <div class="mb-3">
                           <label for="user-email" class="form-label">Email</label>
-                          <input type="email" name="new_email" class="form-control" id="user-email" placeholder="Enter Email Address" aria-describedby="emailHelp">     
+                          <input type="email" name="new_email" class="form-control" id="user-email" placeholder="Enter Email Address" aria-describedby="emailHelp" required>     
                         </div>
                         <div class="mb-3">
                           <label for="user-password" class="form-label">Password</label>
-                          <input type="password" name="new_password" class="form-control" placeholder="Enter Password" id="user-password">
+                          <input type="password" name="new_password" class="form-control" placeholder="Enter Password" id="user-password" required>
                         </div>
                         <div class="mb-3">
                           <label for="user-phone-number" class="form-label">Phone Number</label>
-                          <input type="tel" name="new_phone"class="form-control" placeholder="Enter Phone Number" id="user-phone-number">
+                          <input type="tel" name="new_phone"class="form-control" placeholder="Enter Phone Number" id="user-phone-number" required>
                         </div>
                       </form>
                 </div>
@@ -89,7 +116,7 @@
             </div>
           </div>
          </form>
-          
+  
     <!-- About Modal -->
   <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -99,9 +126,37 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            Welcome to {TITLE}, an enchanting culinary destination in the heart of Boston, where we invite you to embark on a gastronomic journey that spans the diverse landscapes of India. Our restaurant is a vibrant celebration of the rich tapestry of Indian cuisine, offering an extensive menu that captures the essence of regional flavors and culinary traditions from every corner of the subcontinent. From the aromatic and hearty dishes of North India to the fiery delights of the South, the coastal freshness of the West to the intricate spices of the East, our skilled chefs bring their passion and expertise to craft authentic experiences that reflect the unique culinary heritage of each region. The ambiance at {TITLE} is a harmonious blend of modern elegance and traditional elements, creating a welcoming space perfect for intimate dinners, family gatherings, and celebratory feasts. Join us at {TITLE} for a culinary expedition that transcends boundaries, where every bite tells a story of India's diverse culinary heritage, and the spirit of community and celebration prevails.
+          Welcome to Savor Delights Diner, where we embark on a global culinary journey, one bite at a time. Our tagline, "Journey Through the World's Culinary Heritage," encapsulates our commitment to celebrating diverse flavors and creating unforgettable dining experiences.
+
+          At [Your Restaurant Name], we source the finest ingredients worldwide, crafting dishes that tell authentic stories of tradition. From Asia's vibrant markets to Europe's charming bistros, our menu is a curated exploration of global culinary landscapes.    
+          Beyond exceptional food, [Your Restaurant Name] is a warm, welcoming space where hospitality shines. Whether for a romantic dinner or a celebration, our dedicated team ensures every visit is memorable.
+
+          Join us at Savor Delights Diner for a dining experience that transcends boundaries—a journey through the world's culinary heritage, one delicious bite at a time.
         </div>
      
+      </div>
+    </div>
+  </div>
+  <!-- Feedback modal-->
+  <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Feedback by our Customers</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {% for feed in feedback_list %}
+          <div class="card text-bg-secondary mb-3" style="max-width: 30rem;">
+            <div class="card-header">{{feed['customer_name'] | safe}}</div>
+            <div class="card-body">
+              <p class="card-text">{{feed['comments'] | safe}}</p>
+            </div>
+          </div>
+          {% endfor %}
+          
+        </div>
+      
       </div>
     </div>
   </div>
@@ -114,7 +169,19 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-         Shit About US
+          Thank you for considering Savor Delights Diner for your culinary experience. We value your interest and are eager to assist you. Feel free to reach out to us through the following channels:
+          <br/>
+          <br/>
+          <b>Address:</b>
+          1234 Elm Street
+          Boston, MA, 02120
+          <br/>
+      
+          <b>Contact No.: +1234567891</b>
+          <br/>
+         
+          <b>Email:</b>
+          SavorDelightsDiner@gmail.com
         </div>
       
       </div>

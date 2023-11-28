@@ -1,0 +1,57 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/font-awesome/css/font-awesome.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.css.map')}}">
+  <script src="{{ url_for('static', filename='vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.min.css.map')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='css/user.css')}}">
+</head>
+<body>
+<div>
+    {{managernavbarhtml | safe}}
+    
+      <div class="container wd-center">
+        <h2>Statistics</h2>
+        <hr/>
+        <h4>Orders per day</h4>
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-12">
+        <img src="{{ url_for('static', filename='graph.png') }}" width="600" height="300" alt="Orders Graph" class="img-fluid">
+            </div>
+        </div>
+
+        <h4>Food Item sales per cuisine</h4>
+        <form method="post" action="{{ url_for('statistics') }}">
+            <label for="cuisine">Select Cuisine:</label>
+            <select id="cuisine" name="cuisine">
+                {% for cuisine in cuisines %}
+                    <option value="{{ cuisine }}">{{ cuisine }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-success">Show Sales</button>
+        </form>  
+        {% if request.method == 'POST' %}
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                {% if no_sales_message %}
+                <p>{{ no_sales_message }}</p>
+                {% else %}
+                <img src="{{ url_for('static', filename='sales_graph.png') }}" class="img-fluid" alt="Sales Graph">
+                {% endif %}
+        </div>
+        </div>
+        {% endif %}
+      </div>      
+  </div>
+</body>
+</html>
+
+
+  

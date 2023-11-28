@@ -1,0 +1,117 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/font-awesome/css/font-awesome.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.css')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.css.map')}}">
+  <script src="{{ url_for('static', filename='vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.7.1.js"
+  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="{{ url_for ('static',filename='vendors/bootstrap/css/bootstrap.min.css.map')}}">
+  <link rel="stylesheet" href="{{ url_for ('static',filename='css/items.css')}}">
+</head>
+<body>
+<div>
+    {{chefnavbarhtml | safe}}
+      <div class="container wd-center">
+        <br/>
+        <h2>Orders</h2>
+        <!-- {{items_list | safe}} -->
+        <hr/>
+        <div class="float-end">
+            <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleEditToggle">Edit Order</button>
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleDeleteToggle">Delete Order</button>
+        </div>
+        <!--
+            Edit order modal
+        -->
+        <form method="POST" action="{{ url_for('editorder') }}">
+            <div class="modal fade" id="exampleEditToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Edit Order</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                          <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Order ID</label>
+                            <select class="form-select" aria-label="Default select example" name="order_id">
+                              {% for i in orders_list %}
+                              <option value="{{i['order_id'] | safe }}">{{i['order_id'] | safe }}</option>
+                              {% endfor %}
+                            </select>
+    
+                        </div>
+                          <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Status</label>
+                            <select class="form-select" aria-label="Default select example" name="order_status">
+                              <option value="Pending">Pending</option>
+                              <option value="In progress">In progress</option>
+                              <option value="Completed">Completed</option>
+                            </select>
+                             </div>  
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            </form>
+            <!--
+                Delete order modal
+            -->
+            <form method="POST" action="{{ url_for('deleteorder') }}">
+                <div class="modal fade" id="exampleDeleteToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Delete Order</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                              <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Order ID</label>
+                                <select class="form-select" aria-label="Default select example" name="delete_order_id">
+                                  {% for i in orders_list %}
+                                  <option value="{{i['order_id'] | safe }}">{{i['order_id'] | safe }}</option>
+                                  {% endfor %}
+                                </select>
+        
+                            </div> 
+                      </div>
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Delete</button>  
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </form>
+        <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Order ID</th>
+                <th scope="col">Order Date</th>
+                <th scope="col">Order Status</th>
+                <th scope="col">Assigned To</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for i in orders_list %}
+              <tr>
+                
+                <th scope="row">{{i['order_id'] | safe }}</th>
+                <td>{{i['order_date'] | safe }}</td>
+                <td>{{i['order_status'] | safe }}</td>
+                <td>{{i['chef_id'] | safe }}</td>
+              </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+        </div>
+</div>
+</body>
+</html>
