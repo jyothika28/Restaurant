@@ -12,15 +12,25 @@ import pymysql
 from pymysql import Error
 from flask import render_template
 try:
-     username=input("Enter username ")
-     password=input("Enter password ")
+     # username=input("Enter username ")
+     # password=input("Enter password ")
 
-     connection = pymysql.connect(host='localhost', user=username, password=password,db='restaurant', charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+     connection = pymysql.connect(host='localhost', user='Jyothika', password='Hyeg8a@03282',db='restaurant1', charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
      print("Connected to the database")
      @app.route("/index")
      @app.route("/",methods=['GET','POST'])
      def index():
-          return render_template("index.html")
+          cursor=connection.cursor()
+          cursor.execute("SELECT * FROM customer_feedback_view;")
+          feedback_list=[]
+          for row in cursor.fetchall():
+               feedback_dict = {}
+               feedback_dict['comments'] = row['comments']
+               feedback_dict['customer_name'] = row['customer_name']
+               feedback_list.append(feedback_dict)
+          print(feedback_list)
+          cursor.close
+          return render_template("index.html",feedback_list=feedback_list)
 
      @app.route('/login', methods=['GET', 'POST'])
      def login():
@@ -342,7 +352,7 @@ try:
                     print(date_strings)
                     print(order_counts)
 
-                    plt.figure(figsize=(10, 10))
+                    plt.figure(figsize=(13, 9))
                     plt.plot(dates, order_counts, marker='o')
                     plt.title('Number of Orders Over Time')
                     plt.xlabel('Date')
