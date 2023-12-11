@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `restaurant` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `restaurant`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: restaurant
@@ -130,7 +132,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES ('0ACCF42A','Al',2345678980,'al@gmail.com','password',NULL),('1','John',8478292878,'john@gmail.com','john@123',NULL),('10','Sally',9837283746,'sally@gmail.com','sally@123',NULL),('2','Sarah',9873564789,'sarah@gmail.com','sarah@123',NULL),('3','Sahithi',9182638299,'sahithi@gmail.com','sahithi@123',NULL),('4','Martha',6271836783,'martha@gmail.com','martha@123',NULL),('5','Jyothika',8272919048,'jyothika@gmail.com','jyothika@123',NULL),('6','George',7483728987,'george@gmail.com','george@123',NULL),('7','Leia',2637890489,'leia@gmail.com','leia@123',NULL),('8','Sam',8574892857,'sam@gmail.com','sam@123',NULL),('9','Adam',6758392898,'adam@gmail.com','adam@123',NULL),('E7EB001A','Jane',9998765432,'janesloan@gmail.com','scarlet','2023-11-27 03:33:33'),('F1F658C4','Carol',5462729002,'carol@gmail.com','password',NULL);
+INSERT INTO `customer` VALUES ('0ACCF42A','Al',2345678980,'al@gmail.com','password',NULL),('0D5D4D29','Kat',6783678941,'kat@gmail.com','kat123','2023-11-28 17:11:13'),('1','John',8478292878,'john@gmail.com','john@123',NULL),('10','Sally',9837283746,'sally@gmail.com','sally@123',NULL),('2','Sarah',9873564789,'sarah@gmail.com','sarah@123',NULL),('29B41422','Shawn',8472169200,'shawn@gmail.com','password',NULL),('3','Sahithi',9182638299,'sahithi@gmail.com','sahithi@123',NULL),('4','Martha',6271836783,'martha@gmail.com','martha@123',NULL),('5','Jyothika',8272919048,'jyothika@gmail.com','jyothika@123',NULL),('6','George',7483728987,'george@gmail.com','george@123',NULL),('7','Leia',2637890489,'leia@gmail.com','leia@123',NULL),('8','Sam',8574892857,'sam@gmail.com','sam@123',NULL),('9','Adam',6758392898,'adam@gmail.com','adam@123',NULL),('E7EB001A','Jane',9998765432,'janesloan@gmail.com','scarlet','2023-11-27 03:33:33'),('F1F658C4','Carol',5462729002,'carol@gmail.com','password',NULL);
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -148,6 +150,19 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Temporary view structure for view `customer_feedback_view`
+--
+
+DROP TABLE IF EXISTS `customer_feedback_view`;
+/*!50001 DROP VIEW IF EXISTS `customer_feedback_view`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `customer_feedback_view` AS SELECT 
+ 1 AS `customer_name`,
+ 1 AS `comments`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `customer_order`
@@ -175,32 +190,6 @@ LOCK TABLES `customer_order` WRITE;
 /*!40000 ALTER TABLE `customer_order` DISABLE KEYS */;
 INSERT INTO `customer_order` VALUES ('ORDER001','2023-11-23','Completed','CHEF001'),('ORDER002','2023-11-24','Accepted','CHEF002'),('ORDER003','2023-11-25','Completed','CHEF003'),('ORDER004','2023-11-26','Pending','CHEF004'),('ORDER005','2023-11-27','In Progress','CHEF001'),('ORDER006','2023-11-28','Completed','CHEF006'),('ORDER007','2023-11-29','In Progress','CHEF009'),('ORDER008','2023-11-30','Completed','CHEF008'),('ORDER009','2023-11-29','Completed','CHEF010'),('ORDER011','2023-11-30','Completed','CHEF007');
 /*!40000 ALTER TABLE `customer_order` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `debug`
---
-
-DROP TABLE IF EXISTS `debug`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `debug` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `items` varchar(1000) DEFAULT NULL,
-  `total_cost` decimal(10,2) DEFAULT NULL,
-  `current_value` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `debug`
---
-
-LOCK TABLES `debug` WRITE;
-/*!40000 ALTER TABLE `debug` DISABLE KEYS */;
-INSERT INTO `debug` VALUES (6,' 5',2.00,2.00),(7,'',7.00,5.00),(8,' 34.00, 8, 9, 10, 9',23.00,23.00),(9,' 8, 9, 10, 9',57.00,34.00),(10,' 9, 10, 9',65.00,8.00),(11,' 10, 9',74.00,9.00),(12,' 9',84.00,10.00),(13,'',93.00,9.00);
-/*!40000 ALTER TABLE `debug` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -291,6 +280,21 @@ INSERT INTO `food_item` VALUES ('1','Szechuan Vegetarian Fried Rice','Szechuan S
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `item_sales_view`
+--
+
+DROP TABLE IF EXISTS `item_sales_view`;
+/*!50001 DROP VIEW IF EXISTS `item_sales_view`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `item_sales_view` AS SELECT 
+ 1 AS `item_id`,
+ 1 AS `item_name`,
+ 1 AS `cuisine_name`,
+ 1 AS `total_quantity_sold`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `manager`
 --
 
@@ -342,7 +346,7 @@ DROP TABLE IF EXISTS `order_item`;
 CREATE TABLE `order_item` (
   `order_id` varchar(10) NOT NULL,
   `item_id` varchar(10) NOT NULL,
-  `quantity` varchar(10) NOT NULL,
+  `quantity` int DEFAULT NULL,
   PRIMARY KEY (`order_id`,`item_id`),
   KEY `item_id` (`item_id`),
   CONSTRAINT `order_item_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `customer_order` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -356,9 +360,22 @@ CREATE TABLE `order_item` (
 
 LOCK TABLES `order_item` WRITE;
 /*!40000 ALTER TABLE `order_item` DISABLE KEYS */;
-INSERT INTO `order_item` VALUES ('ORDER001','1','2'),('ORDER001','7','3'),('ORDER001','8','1'),('ORDER002','5','2'),('ORDER002','6','4'),('ORDER003','2','3'),('ORDER003','3','2'),('ORDER003','4','1'),('ORDER004','2','3'),('ORDER005','9','1'),('ORDER006','20','1'),('ORDER008','64','3'),('ORDER008','90','1');
+INSERT INTO `order_item` VALUES ('ORDER001','1',2),('ORDER001','7',3),('ORDER001','8',1),('ORDER002','5',2),('ORDER002','6',4),('ORDER003','2',3),('ORDER003','3',2),('ORDER003','4',1),('ORDER004','2',3),('ORDER005','9',1),('ORDER006','20',1),('ORDER008','64',3),('ORDER008','90',1);
 /*!40000 ALTER TABLE `order_item` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `orders_count_by_date`
+--
+
+DROP TABLE IF EXISTS `orders_count_by_date`;
+/*!50001 DROP VIEW IF EXISTS `orders_count_by_date`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `orders_count_by_date` AS SELECT 
+ 1 AS `order_date`,
+ 1 AS `order_count`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `reservation`
@@ -386,7 +403,7 @@ CREATE TABLE `reservation` (
 
 LOCK TABLES `reservation` WRITE;
 /*!40000 ALTER TABLE `reservation` DISABLE KEYS */;
-INSERT INTO `reservation` VALUES ('13D13C52',7,'2023-11-30','05:01:00','1',8),('29698C87',6,'2023-11-24','03:00:00','1',5),('40CE02E9',3,'2023-11-28','01:00:00','1',3),('RES001',1,'2023-11-23','18:00:00','1',NULL),('RES002',2,'2023-11-24','19:30:00','2',NULL),('RES003',3,'2023-11-25','20:00:00','3',NULL),('RES004',4,'2023-11-26','18:30:00','4',NULL),('RES005',5,'2023-11-27','19:00:00','5',NULL),('RES006',6,'2023-11-28','20:30:00','6',NULL),('RES007',7,'2023-11-29','21:00:00','7',NULL),('RES008',8,'2023-11-30','18:45:00','8',NULL),('RES009',9,'2023-12-01','19:15:00','9',NULL),('RES010',10,'2023-12-02','20:45:00','10',NULL);
+INSERT INTO `reservation` VALUES ('13D13C52',7,'2023-11-30','05:01:00','1',8),('1A0394F6',5,'2023-11-23','13:12:00','0D5D4D29',5),('29698C87',6,'2023-11-24','03:00:00','1',5),('40CE02E9',3,'2023-11-28','01:00:00','1',3),('RES001',1,'2023-11-23','18:00:00','1',NULL),('RES002',2,'2023-11-24','19:30:00','2',NULL),('RES003',3,'2023-11-25','20:00:00','3',NULL),('RES004',4,'2023-11-26','18:30:00','4',NULL),('RES005',5,'2023-11-27','19:00:00','5',NULL),('RES006',6,'2023-11-28','20:30:00','6',NULL),('RES007',7,'2023-11-29','21:00:00','7',NULL),('RES008',8,'2023-11-30','18:45:00','8',NULL),('RES009',9,'2023-12-01','19:15:00','9',NULL),('RES010',10,'2023-12-02','20:45:00','10',NULL);
 /*!40000 ALTER TABLE `reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -431,8 +448,11 @@ CREATE TABLE `waiting_list` (
   `customer_id` varchar(10) DEFAULT NULL,
   `number_of_people` int DEFAULT NULL,
   `table_number` decimal(2,0) DEFAULT NULL,
+  `manager_id` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`waiting_list_id`),
   KEY `customer_id` (`customer_id`),
+  KEY `fk_waiting_list_manager` (`manager_id`),
+  CONSTRAINT `fk_waiting_list_manager` FOREIGN KEY (`manager_id`) REFERENCES `manager` (`manager_id`),
   CONSTRAINT `waiting_list_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -443,7 +463,7 @@ CREATE TABLE `waiting_list` (
 
 LOCK TABLES `waiting_list` WRITE;
 /*!40000 ALTER TABLE `waiting_list` DISABLE KEYS */;
-INSERT INTO `waiting_list` VALUES ('23D9F0B7','2023-11-30','02:30:00','4',2,7),('69402ED9','2023-11-23','10:00:00','F1F658C4',4,9),('BA1D5731','2023-11-14','10:10:00','0ACCF42A',3,9),('WL001','2023-11-23','18:30:00','10',NULL,NULL),('WL002','2023-11-24','19:00:00','9',NULL,NULL),('WL003','2023-11-25','20:30:00','8',NULL,NULL),('WL004','2023-11-26','21:00:00','7',NULL,NULL),('WL005','2023-11-27','18:45:00','6',NULL,NULL),('WL006','2023-11-28','19:15:00','5',NULL,NULL),('WL007','2023-11-29','20:45:00','4',NULL,NULL),('WL008','2023-11-30','21:15:00','3',NULL,NULL),('WL009','2023-12-01','18:15:00','2',NULL,NULL),('WL010','2023-12-02','19:45:00','1',NULL,NULL);
+INSERT INTO `waiting_list` VALUES ('23D9F0B7','2023-11-30','02:30:00','4',2,7,NULL),('5BA6624A','2023-11-23','14:22:00','F1F658C4',4,2,'MGR001'),('69402ED9','2023-11-23','10:00:00','F1F658C4',4,9,NULL),('8B11B0DD','2023-11-22','15:20:00','29B41422',4,4,'MGR001'),('BA1D5731','2023-11-14','10:10:00','0ACCF42A',3,9,NULL),('WL001','2023-11-23','18:30:00','10',NULL,NULL,NULL),('WL002','2023-11-24','19:00:00','9',NULL,NULL,NULL),('WL003','2023-11-25','20:30:00','8',NULL,NULL,NULL),('WL004','2023-11-26','21:00:00','7',NULL,NULL,NULL),('WL005','2023-11-27','18:45:00','6',NULL,NULL,NULL),('WL006','2023-11-28','19:15:00','5',NULL,NULL,NULL),('WL007','2023-11-29','20:45:00','4',NULL,NULL,NULL),('WL008','2023-11-30','21:15:00','3',NULL,NULL,NULL),('WL009','2023-12-01','18:15:00','2',NULL,NULL,NULL),('WL010','2023-12-02','19:45:00','1',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `waiting_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -563,6 +583,54 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `add_order` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_order`(
+	IN o_id VARCHAR(10),
+	IN o_date DATE,
+    IN o_status VARCHAR(20)
+)
+BEGIN
+    INSERT INTO customer_order (order_id, order_date, order_status)
+    VALUES (o_id, o_date, o_status);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `add_order_item` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_order_item`(
+	IN o_id VARCHAR(10),
+    IN i_id VARCHAR(10),
+    IN quantity INT
+)
+BEGIN
+    INSERT INTO order_item (order_id, item_id, quantity)
+    VALUES (o_id, i_id, quantity);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `add_reservation` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -606,12 +674,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `add_waiting_list`(
     IN w_date DATE,
     IN w_time TIME,
     IN c_id VARCHAR(10),
-    IN num_people INT
+    IN num_people INT,
+    IN m_id VARCHAR(10)
     
 )
 BEGIN
-    INSERT INTO waiting_list (waiting_list_id, waiting_list_date, waiting_list_time, customer_id, number_of_people, table_number)
-    VALUES (w_id, w_date, w_time, c_id, num_people, table_num);
+    INSERT INTO waiting_list (waiting_list_id, waiting_list_date, waiting_list_time, customer_id, number_of_people, table_number, manager_id)
+    VALUES (w_id, w_date, w_time, c_id, num_people, table_num, m_id);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -739,6 +808,26 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `get_food_item_details` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_food_item_details`(in i_id varchar(10))
+BEGIN
+select * from food_item
+where item_id=i_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `update_order_status` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -784,6 +873,42 @@ DELIMITER ;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `customer_feedback_view`
+--
+
+/*!50001 DROP VIEW IF EXISTS `customer_feedback_view`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `customer_feedback_view` AS select `c`.`customer_name` AS `customer_name`,`f`.`comments` AS `comments` from (`customer` `c` join `feedback` `f` on((`c`.`customer_id` = `f`.`customer_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `item_sales_view`
+--
+
+/*!50001 DROP VIEW IF EXISTS `item_sales_view`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `item_sales_view` AS select `i`.`item_id` AS `item_id`,`i`.`item_name` AS `item_name`,`c`.`cuisine_name` AS `cuisine_name`,sum(`oi`.`quantity`) AS `total_quantity_sold` from ((`food_item` `i` join `order_item` `oi` on((`i`.`item_id` = `oi`.`item_id`))) join `cuisine` `c` on((`c`.`cuisine_id` = `i`.`cuisine_id`))) group by `i`.`item_id`,`i`.`item_name`,`c`.`cuisine_name` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `manager_view`
 --
 
@@ -800,6 +925,24 @@ DELIMITER ;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `orders_count_by_date`
+--
+
+/*!50001 DROP VIEW IF EXISTS `orders_count_by_date`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `orders_count_by_date` AS select `customer_order`.`order_date` AS `order_date`,count(0) AS `order_count` from `customer_order` group by `customer_order`.`order_date` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -810,4 +953,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-26 23:04:38
+-- Dump completed on 2023-12-11 17:38:43

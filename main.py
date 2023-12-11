@@ -1,31 +1,36 @@
-import re
 from flask import Flask, request, flash,redirect,render_template, url_for,session,g, jsonify
 import ctypes
-import pandas as pd
-import os
+# import the uuid to generate unique id
 import uuid
 import sys
+# import the datetime to get the current date and time
 import datetime
+# import the matplotlib to plot the graph
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt2
 app=Flask(__name__)
-
+# import the mysql client for python
 import pymysql
 from pymysql import Error
 from flask import render_template
 try:
-     # username=input("Enter username ")
-     # password=input("Enter password ")
+     # Enter your database connection details below
+     username=input("Enter username ")
+     password=input("Enter password ")
 
-     connection = pymysql.connect(host='localhost', user='Jyothika', password='Hyeg8a@03282',db='restaurant1', charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+     # Connect to the database
+     connection = pymysql.connect(host='localhost', user=username, password=password,db='restaurant', charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
 
      print("Connected to the database")
+
+     # Home page route of the website
      @app.route("/index")
      @app.route("/",methods=['GET','POST'])
      def index():
           cursor=connection.cursor()
           cursor.execute("SELECT * FROM customer_feedback_view;")
           feedback_list=[]
+          # Retrieve the results of the view
           for row in cursor.fetchall():
                feedback_dict = {}
                feedback_dict['comments'] = row['comments']
@@ -35,9 +40,11 @@ try:
           cursor.close
           return render_template("index.html",feedback_list=feedback_list)
 
+     # Login page route of the website
      @app.route('/login', methods=['GET', 'POST'])
      def login():
           if request.method == 'POST':
+               # Retreiving the details of the customer to login
                loginDetails=request.form
                emailId = loginDetails['u_email']
                password = request.form['u_pass']
@@ -45,12 +52,14 @@ try:
                cursor=connection.cursor()
                cursor.callproc('GetCustomerDetails')
                
+               # Check if the user is a customer
                for row in cursor.fetchall():
                     if(row['email_id']==emailId and row['password']==password):
                          presentuser=row['customer_name']
                          session['user']=presentuser
                          cursor.close
                          return redirect(url_for("sess"))
+               # Check if the user is a chef
                else:
                     cursor = connection.cursor()
                     chef_id_query="select * from chef where email_id='"+emailId+"'"
@@ -73,6 +82,7 @@ try:
                                    cursor.close
                                    ctypes.windll.user32.MessageBoxW(0, "Invalid Credentials", "Error",1)
                                    return redirect(url_for("index"))
+                    # Check if the user is a manager
                     else:
                          cursor = connection.cursor()
                          manager_id_query="select * from manager where email_id='"+emailId+"'"
@@ -94,13 +104,15 @@ try:
                                    ctypes.windll.user32.MessageBoxW(0, "Invalid Credentials", "Error",1)
                                    return redirect(url_for("index"))
                               
+          # Redirect to the home page if the user has failed to log in                    
           else:
                return render_template("index.html")
-               #return render_template("user.html",name=session['user'])
-     
+               
+     # Sign up page route of the website
      @app.route("/signup",methods=['GET','POST'])
      def signup():
           if request.method=='POST':
+               # Retreiving the details of the customer to sign up
                signupDetails=request.form
                u_name=signupDetails['new_name']
                u_email=signupDetails['new_email']
@@ -115,9 +127,11 @@ try:
                
           pass
      
+     # Route to make a reservation
      @app.route("/makereservation",methods=['GET','POST'])
      def makereservation():
           if request.method=='POST':
+               # Retreiving the details of the customer to reserve a table
                reservationDetails=request.form
                r_name=reservationDetails['res_name']
                r_email=reservationDetails['res_email']
@@ -129,21 +143,25 @@ try:
                r_id = str(uuid.uuid4())[:8].replace('-', '').upper()
                print(r_id,r_table,r_name,r_email,r_phone,r_people,r_date,r_time)
                cursor=connection.cursor()
+               # Retreiving Customer Details
                get_customer_id="select * from customer where email_id='"+r_email+"'"
                cursor.execute(get_customer_id)
                for row in cursor.fetchall():
                     c_id=row['customer_id']
+               # passing customer details to the procedure
                cursor.callproc('add_reservation',args=(r_id,r_table,r_date,r_time,c_id,r_people))
                connection.commit()
                cursor.close
                return redirect(url_for('sess'))
                
           pass
-
+     
+     # Route to add customers to the waiting list
      @app.route("/addwaitinglist",methods=['GET','POST'])
      def addwaitinglist():
           m_id = request.args.get('manager_id')
           if request.method=='POST':
+               # Retreiving the details of the customer to add to the waiting list
                waitingListDetails=request.form
                w_name=waitingListDetails['w_name']
                w_email=waitingListDetails['w_email']
@@ -156,16 +174,18 @@ try:
                c_id = str(uuid.uuid4())[:8].replace('-', '').upper()
                print(w_id,w_table,w_name,w_email,w_phone,w_people,w_date,w_time,c_id, m_id)
                cursor=connection.cursor()
+               # Retreiving Customer Details
                get_customer_id="select * from customer where email_id='"+w_email+"'"
                cursor.execute(get_customer_id)
                if(cursor.rowcount==0):
-                    # print('1: ', c_id,w_name,w_email,'password',w_phone)
+                    
                     cursor.callproc('add_customer',args=(c_id,w_name,w_email,'password',w_phone))
                     connection.commit()
                else:
                     for row in cursor.fetchall():
                          c_id=row['customer_id']
-               # print('2: ', w_id,w_table,w_date,w_time,c_id,w_people)
+              
+               # passing customer details to the procedure
                cursor.callproc('add_waiting_list',args=(w_id,w_table,w_date,w_time,c_id,w_people, m_id))
                connection.commit()
                cursor.close
@@ -173,13 +193,17 @@ try:
                
           pass
                     
- 
+     # Route to render nav bar 
      def render_navbar():
           if 'user' in session:
+               # Assign the session variable user to global variable
                g.user=session['user']
+               # Check if the user is logged in
                if(g.user):
+                    # Assign the session variable user to local variable
                     name=session['user']
                     cursor=connection.cursor()
+                    # Retreive the customer details
                     get_customer_details="select * from customer where customer_name='"+name+"'"
                     cursor.execute(get_customer_details)
                     customer_details=[]
@@ -187,16 +211,21 @@ try:
                          customer_details.append(row['email_id'])
                          customer_details.append(row['phone_number'])
                     cursor.close
+                    # Render the nav bar with the customer details
                     return render_template('navbar.html',name=name,customer_details=customer_details)
           else:
                return render_template('index.html')
-          
+     
+     # Route to render chef nav bar
      def render_chefnavbar():
           if 'user' in session:
+               # Assign the session variable user to global variable
                g.user=session['user']
                if(g.user):
+                    # Assign the session variable user to local variable
                     name=session['user']
                     cursor=connection.cursor()
+                    # Retreive the customer details
                     get_customer_details="select * from customer where customer_name='"+name+"'"
                     cursor.execute(get_customer_details)
                     customer_details=[]
@@ -204,16 +233,18 @@ try:
                          customer_details.append(row['email_id'])
                          customer_details.append(row['phone_number'])
                     cursor.close
+                    # Render the nav bar with the customer details
                     return render_template('chef_navbar.html',name=name,customer_details=customer_details)
           else:
                return render_template('index.html')
-     
+     # Route to render manager nav bar
      def render_managernavbar():
           if 'user' in session:
                g.user=session['user']
                if(g.user):
                     name=session['user']
                     cursor=connection.cursor()
+                    # Retreive the Manager details
                     get_manager_details="select * from manager where manager_name='"+name+"'"
                     cursor.execute(get_manager_details)
                     manager_details=[]
@@ -221,12 +252,13 @@ try:
                          manager_details.append(row['email_id'])
                          manager_details.append(row['manager_id'])
                     cursor.close
+                    # Render the nav bar with the manager details
                     return render_template('manager_navbar.html',name=name, manager_details=manager_details)
           else:
                return render_template('index.html')
           
           
-     
+     # Route to retrieve orders placed by the customer
      @app.route("/chef_orders",methods=['GET','POST'])
      def chef_orders():
           if 'user' in session:
@@ -234,6 +266,7 @@ try:
                if(g.user):
                     chefnavbarhtml = render_chefnavbar()
                     cursor=connection.cursor()
+                    # Retreive the orders placed by the customer
                     cursor.execute("SELECT * FROM chef_orders_view;")
                     orders_list=[]
                     for row in cursor.fetchall():
@@ -244,8 +277,10 @@ try:
                          order_dict['chef_id'] = row['chef_id']
                          orders_list.append(order_dict)
                     cursor.close
+                    # Render the orders placed by the customer
                     return render_template("chef_orders.html",chefnavbarhtml=chefnavbarhtml,orders_list=orders_list)
 
+     # Route to edit the order details of the customer
      @app.route("/editorder",methods=['GET','POST'])
      def editorder():
           if(request.method=='POST'):
@@ -258,7 +293,8 @@ try:
                cursor.close
                return redirect(url_for('chef_orders'))
           pass
-
+     
+     # Route to delete the order details of the customer
      @app.route("/deleteorder",methods=['GET','POST'])
      def deleteorder():
           if(request.method=='POST'):
@@ -271,6 +307,7 @@ try:
                cursor.close
                return redirect(url_for('chef_orders'))
 
+     # Session route for the chef
      @app.route("/chef_sess",methods=['GET','POST'])
      def chef_sess():
           g.user=None
@@ -280,17 +317,19 @@ try:
                     #adminloop=getadminDetails()
                     chefnavbarhtml = render_chefnavbar()
                     cursor=connection.cursor()
-                    #calling the function
+                    # Retreive the cuisine count
                     cursor.execute("SELECT get_cuisine_count() AS cuisine_count;")
                     cuisine_count = cursor.fetchone()['cuisine_count']
-                    #calling the procedure
+                    # Retreive the cuisine details
                     cursor.callproc('GetCuisineDetails')
                     cuisine_list=[]
                     for row in cursor.fetchall():
                          cuisine_list.append(row['cuisine_name'])
                     cursor.close
+                    # pass the cuisine details to the chef page
                     return render_template("chef.html",cuisine_list=cuisine_list,cuisine_count=cuisine_count,chefnavbarhtml=chefnavbarhtml)  
 
+     # Session route for the manager
      @app.route("/manager_sess",methods=['GET','POST'])
      def manager_sess():
           g.user=None
@@ -300,10 +339,10 @@ try:
                     #adminloop=getadminDetails()
                     managernavbarhtml = render_managernavbar()
                     cursor=connection.cursor()
-                    #calling the function
+                    # Retreive the cuisine count
                     cursor.execute("SELECT get_cuisine_count() AS cuisine_count;")
                     cuisine_count = cursor.fetchone()['cuisine_count']
-                    #calling the procedure
+                    # Retreive the cuisine details
                     cursor.callproc('GetCuisineDetails')
                     cuisine_list=[]
                     for row in cursor.fetchall():
@@ -311,6 +350,7 @@ try:
                     cursor.close
                     return render_template("manager.html",cuisine_list=cuisine_list,cuisine_count=cuisine_count,managernavbarhtml=managernavbarhtml)  
 
+     # Session route for the customer
      @app.route("/sess",methods=['GET','POST'])
      def sess():
           g.user=None
@@ -336,6 +376,7 @@ try:
           
                return redirect(url_for('index'))
      
+     # Route to retrieve statistics of the orders placed by the customer
      @app.route('/statistics', methods=['GET', 'POST'])
      def statistics():
           if 'user' in session:
@@ -345,6 +386,7 @@ try:
                     cuisine_list=[]
 
                     cursor=connection.cursor()
+                    # Retreive the number of orders placed by the customer by date
                     cursor.execute("SELECT * FROM orders_count_by_date")
                     result = cursor.fetchall()
 
@@ -354,7 +396,7 @@ try:
                     date_strings = [str(date) for date in dates]
                     print(date_strings)
                     print(order_counts)
-
+                    # Plot the graph
                     plt.figure(figsize=(13, 9))
                     plt.plot(dates, order_counts, marker='o')
                     plt.title('Number of Orders Over Time')
@@ -362,7 +404,7 @@ try:
                     plt.ylabel('Number of Orders')
                     plt.xticks(rotation=45)
                     plt.savefig('static/graph.png')
-
+                    # Retreive the cuisine details
                     cursor.callproc('GetCuisineDetails')
                     for row in cursor.fetchall():
                          cuisine_list.append(row['cuisine_name'])
@@ -370,7 +412,7 @@ try:
                     print(cuisine_list)
 
                     if request.method == 'POST':
-                         
+                         # Get the selected cuisine from the form
                          selected_cuisine = request.form.get('cuisine')
                          cursor.execute("SELECT * FROM item_sales_view")
                          sales = filter(lambda row: row['cuisine_name'] == selected_cuisine, cursor.fetchall())
@@ -387,7 +429,7 @@ try:
                          if items == []:
                               no_sales_message = "No sales recorded for " + selected_cuisine + " cuisine"
                               return render_template('statistics.html', managernavbarhtml=managernavbarhtml, cuisines=cuisine_list, no_sales_message=no_sales_message)
-
+                         # Plot the graph
                          plt2.figure(figsize=(32, 10))
                          plt2.barh(items, quantities, color='green')
                          plt2.ylabel('Food Item', fontsize=20)
@@ -398,7 +440,8 @@ try:
 
                     
                     return render_template('statistics.html', managernavbarhtml=managernavbarhtml, cuisines=cuisine_list, no_sales_message=None)
-          
+     
+     # Route to retrieve the details of the food items with respect to the cuisine name selected by the customer
      @app.route('/items/<cuisine_name>')
      def view_item(cuisine_name):
      # Your logic to retrieve and display details for the given cuisine
@@ -407,11 +450,12 @@ try:
                if(g.user):
                     navbarhtml = render_navbar()
                     cursor=connection.cursor()
+                    # Retreive the cuisine id
                     get_cuisine_id="select cuisine_id from cuisine where cuisine_name='"+cuisine_name+"'"
                     cursor.execute(get_cuisine_id)
                     for row in cursor.fetchall():
                          retreive_cuisine_id=row['cuisine_id']
-                    #calling the function
+                    # Retreive the number of items in the cuisine
                     cursor.execute("SELECT get_item_count_by_cuisine(%s) AS item_count;", (retreive_cuisine_id,))
                     cuisine_item_count=cursor.fetchone()['item_count']
                     cursor.callproc('get_food_item_cuisine',args=(retreive_cuisine_id,))
@@ -427,17 +471,18 @@ try:
                          item_dict['image_url'] = row['image_url']
                          items_list.append(item_dict)
                     cursor.close
-
+                    # Render the food items with respect to the cuisine name selected by the customer
                     return render_template("items.html",navbarhtml=navbarhtml,cuisine_name=cuisine_name,items_list=items_list,cuisine_item_count=cuisine_item_count)
 
-          # return f"Viewing details for cuisine: {cuisine_name}"     
+     # Route to logout   
      @app.route("/logout",methods=['GET','POST'])
      def logout():
           session.pop('user',None)
-          return render_template("index.html")
+          return redirect(url_for("index"))
 
      cart_items = {}
 
+     # Route to add the food items to the cart
      @app.route('/add_to_cart/<item_id>', methods=['GET', 'POST'])
      def add_to_cart(item_id):
           if 'user' in session:
@@ -446,6 +491,7 @@ try:
                     quantity = int(request.form.get('quantity', 1))
 
                     cursor=connection.cursor()
+                    # Retreive the food item details
                     cursor.callproc('get_food_item_details',args=(item_id,))
                     item_details = cursor.fetchall()[0]
                     # Add the item to the cart dictionary
@@ -457,11 +503,13 @@ try:
                     }
                     return jsonify({'status': 'success', 'message': 'Item added to cart'})
 
+     # Route to view the food items in the cart
      @app.route('/view_cart')
      def view_cart():
           if 'user' in session:
                g.user=session['user']
                if(g.user):
+                    # Render the nav bar
                     navbarhtml = render_navbar()
                     prices = ""
                     for item_id, item in cart_items.items():
@@ -476,6 +524,7 @@ try:
                     
                     return render_template('cart.html', navbarhtml=navbarhtml, cart_items=cart_items, total_cost=total_cost)
      
+     # Route to save the items in to the cart
      @app.route('/save_cart', methods=['POST'])
      def save_cart():
            if 'user' in session:
@@ -487,6 +536,7 @@ try:
                          order_status = 'Pending'
                          cursor=connection.cursor()
                          print('Order id: ', order_id, 'Order date: ', order_date, 'Order status: ', order_status)
+                         # Add the order details to the database
                          cursor.callproc('add_order',args=(order_id, order_date, order_status))
 
                          for item in cart_items:
@@ -502,7 +552,8 @@ try:
                     except Exception as e:
                          print(f"Error saving cart: {e}")
                          return jsonify({'status': 'error'})
-    
+
+# Catching the error    
 except pymysql.Error as e:
      print("Failed to connect to the database, Invalid credentials:{}".format(e))  
      exit()
